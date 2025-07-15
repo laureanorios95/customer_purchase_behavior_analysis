@@ -1,0 +1,11 @@
+product_id,product_name,category,price,brand,sku
+301,Wireless Bluetooth Headphones,Electronics,29.99,TechSound,WBH-001
+302,Smart Watch Pro,Electronics,149.99,TimeTrack,SWP-002
+303,Organic Cotton T-Shirt,Clothing,29.99,EcoWear,OCT-003
+304,Running Shoes Elite,Footwear,79.99,SpeedRun,RSE-004
+305,Stainless Steel Water Bottle,Home & Kitchen,99.99,HydroLife,SSWB-005
+306,Yoga Mat Premium,Sports & Fitness,49.99,FlexFit,YMP-006
+307,LED Desk Lamp,Home & Office,39.99,BrightLight,LDL-007
+308,Backpack Professional,Bags & Luggage,89.99,CarryAll,BP-008
+309,Coffee Maker Deluxe,Home & Kitchen,199.99,BrewMaster,CMD-009
+310,Gaming Mouse RGB,Electronics,89.99,GamePro,GMR-010
