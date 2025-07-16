@@ -13,7 +13,7 @@ warnings.filterwarnings('ignore')
 plt.style.use('seaborn-v0_8-darkgrid')
 sns.set_palette("husl")
 
-###Data Loading and Initial Exploration###
+### Data Loading and Initial Exploration ###
 # Load datasets
 customers_df = pd.read_csv('customers.csv')
 orders_df = pd.read_csv('orders.csv')
@@ -38,3 +38,17 @@ def check_missing_values(df, df_name):
     
 for df, name in [(customers_df, 'Customers'), (orders_df, 'Orders'), (products_df, 'Products')]:
     check_missing_values(df, name)
+
+### Data Cleaning and Preprocessing ###
+# Convert date columns
+orders_df['order_date'] = pd.to_datetime(orders_df['order_date'])
+customers_df['registration_date'] = pd.to_datetime(customers_df['registration_date'])
+
+# Create derived features
+orders_df['order_month'] = orders_df['order_date'].dt.to_period('M')
+orders_df['order_day_of_week'] = orders_df['order_date'].dt.day_name()
+orders_df['order_hour'] = orders_df['order_date'].dt.hour
+
+# Handle missing values
+orders_df['discount_applied'].fillna(0, inplace=True)
+customers_df['age'].fillna(customers_df['age'].median(), inplace=True)
