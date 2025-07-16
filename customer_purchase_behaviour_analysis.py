@@ -87,3 +87,45 @@ axes[1, 1].set_ylabel('Number of Orders')
 
 plt.tight_layout()
 plt.show()
+
+### Customer Segmentation Analysis ###
+# RFM Analysis (Recency, Frequency, Monetary)
+current_date = orders_df['order_date'].max()
+
+rfm = orders_df.groupby('customer_id').agg({
+    'order_date': lambda x: (current_date - x.max()).days,  # Recency
+    'order_id': 'count',  # Frequency
+    'total_amount': 'sum'  # Monetary
+}).rename(columns={
+    'order_date': 'recency',
+    'order_id': 'frequency',
+    'total_amount': 'monetary'
+})
+
+# Create RFM segments
+def rfm_segmentation(row):
+    if row['recency'] < 30 and row['frequency'] > 10 and row['monetary'] > 1000:
+        return 'Champions'
+    elif row['recency'] < 90 and row['frequency'] > 5 and row['monetary'] > 500:
+        return 'Loyal Customers'
+    elif row['recency'] < 90 and row['frequency'] <= 5:
+        return 'Potential Loyalists'
+    elif row['recency'] >= 90 and row['frequency'] > 5:
+        return 'At Risk'
+    elif row['recency'] >= 180:
+        return 'Lost'
+    else:
+        return 'Others'
+
+rfm['segment'] = rfm.apply(rfm_segmentation, axis=1)
+
+# Visualize RFM segments
+plt.figure(figsize=(10, 6))
+segment_summary = rfm['segment'].value_counts()
+plt.bar(segment_summary.index, segment_summary.values)
+plt.title('Customer Segments based on RFM Analysis')
+plt.xlabel('Segment')
+plt.ylabel('Number of Customers')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
