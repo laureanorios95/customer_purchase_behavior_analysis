@@ -30,5 +30,6 @@ This project analyzes e-commerce transaction data to:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/ecommerce-customer-analysis.git
-cd ecommerce-customer-analysis
+git clone https://github.com/laureanorios95/customer_purchase_behavior_analysis.git
+cd customer_purchase_behavior_analysis
+python customer_purchase_behaviour_analysis.py
