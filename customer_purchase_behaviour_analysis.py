@@ -52,3 +52,38 @@ orders_df['order_hour'] = orders_df['order_date'].dt.hour
 # Handle missing values
 orders_df['discount_applied'].fillna(0, inplace=True)
 customers_df['age'].fillna(customers_df['age'].median(), inplace=True)
+
+### Exploratory Data Analysis ###
+# Customer Demographics Analysis
+fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+
+# Age distribution
+axes[0, 0].hist(customers_df['age'], bins=20, edgecolor='black', alpha=0.7)
+axes[0, 0].set_title('Customer Age Distribution')
+axes[0, 0].set_xlabel('Age')
+axes[0, 0].set_ylabel('Count')
+
+# Customer segments
+segment_counts = customers_df['segment'].value_counts()
+axes[0, 1].pie(segment_counts.values, labels=segment_counts.index, autopct='%1.1f%%')
+axes[0, 1].set_title('Customer Segments')
+
+# Revenue by month
+monthly_revenue = orders_df.groupby('order_month')['total_amount'].sum()
+axes[1, 0].plot(monthly_revenue.index.astype(str), monthly_revenue.values, marker='o')
+axes[1, 0].set_title('Monthly Revenue Trend')
+axes[1, 0].set_xlabel('Month')
+axes[1, 0].set_ylabel('Revenue ($)')
+axes[1, 0].tick_params(axis='x', rotation=45)
+
+# Order distribution by day of week
+day_orders = orders_df['order_day_of_week'].value_counts().reindex([
+    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
+])
+axes[1, 1].bar(day_orders.index, day_orders.values)
+axes[1, 1].set_title('Orders by Day of Week')
+axes[1, 1].set_xlabel('Day')
+axes[1, 1].set_ylabel('Number of Orders')
+
+plt.tight_layout()
+plt.show()
