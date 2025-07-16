@@ -129,3 +129,29 @@ plt.ylabel('Number of Customers')
 plt.xticks(rotation=45)
 plt.tight_layout()
 plt.show()
+
+### Product Performance Analysis ###
+# Merge orders with products
+order_products = orders_df.merge(products_df, on='product_id')
+
+# Top performing products
+top_products = order_products.groupby('product_name').agg({
+    'quantity': 'sum',
+    'total_amount': 'sum',
+    'order_id': 'count'
+}).rename(columns={'order_id': 'order_count'}).sort_values('total_amount', ascending=False).head(10)
+
+# Visualize top products
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+
+top_products['total_amount'].plot(kind='barh', ax=ax1)
+ax1.set_title('Top 10 Products by Revenue')
+ax1.set_xlabel('Revenue ($)')
+
+# Product category performance
+category_performance = order_products.groupby('category')['total_amount'].sum().sort_values(ascending=False)
+ax2.pie(category_performance.values, labels=category_performance.index, autopct='%1.1f%%')
+ax2.set_title('Revenue by Product Category')
+
+plt.tight_layout()
+plt.show()
