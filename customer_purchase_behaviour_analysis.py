@@ -155,3 +155,35 @@ ax2.set_title('Revenue by Product Category')
 
 plt.tight_layout()
 plt.show()
+
+### Predictive Analysis ###
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+# Prepare data for clustering
+customer_features = rfm[['recency', 'frequency', 'monetary']].copy()
+scaler = StandardScaler()
+customer_features_scaled = scaler.fit_transform(customer_features)
+
+# Find optimal number of clusters
+silhouette_scores = []
+K = range(2, 10)
+for k in K:
+    kmeans = KMeans(n_clusters=k, random_state=42)
+    kmeans.fit(customer_features_scaled)
+    score = silhouette_score(customer_features_scaled, kmeans.labels_)
+    silhouette_scores.append(score)
+
+# Plot silhouette scores
+plt.figure(figsize=(10, 6))
+plt.plot(K, silhouette_scores, 'bo-')
+plt.xlabel('Number of clusters')
+plt.ylabel('Silhouette Score')
+plt.title('Optimal Number of Clusters')
+plt.show()
+
+# Apply final clustering
+optimal_k = K[np.argmax(silhouette_scores)]
+kmeans = KMeans(n_clusters=optimal_k, random_state=42)
+rfm['cluster'] = kmeans.fit_predict(customer_features_scaled)
