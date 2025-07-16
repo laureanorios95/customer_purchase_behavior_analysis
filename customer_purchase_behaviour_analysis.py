@@ -1,6 +1,7 @@
 # Customer Purchase Behavior Analysis
 # Goal: Analyze e-commerce data to identify patterns and provide business insights
 
+### Project Structure ###
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -102,6 +103,9 @@ rfm = orders_df.groupby('customer_id').agg({
     'total_amount': 'monetary'
 })
 
+# Reset index to make customer_id a column
+rfm = rfm.reset_index()
+
 # Create RFM segments
 def rfm_segmentation(row):
     if row['recency'] < 30 and row['frequency'] > 10 and row['monetary'] > 1000:
@@ -187,3 +191,42 @@ plt.show()
 optimal_k = K[np.argmax(silhouette_scores)]
 kmeans = KMeans(n_clusters=optimal_k, random_state=42)
 rfm['cluster'] = kmeans.fit_predict(customer_features_scaled)
+
+### Business Insigths and Recommendations ###
+# Generate summary statistics for each cluster
+cluster_summary = rfm.groupby('cluster').agg({
+    'recency': 'mean',
+    'frequency': 'mean',
+    'monetary': 'mean',
+    'customer_id': 'count'
+}).rename(columns={'customer_id': 'customer_count'})
+
+print("Cluster Summary:")
+print(cluster_summary)
+
+# Create a summary report
+def generate_insights():
+    insights = []
+    
+    # Revenue insights
+    total_revenue = orders_df['total_amount'].sum()
+    avg_order_value = orders_df['total_amount'].mean()
+    insights.append(f"Total Revenue: ${total_revenue:,.2f}")
+    insights.append(f"Average Order Value: ${avg_order_value:.2f}")
+    
+    # Customer insights
+    repeat_customers = (rfm['frequency'] > 1).sum()
+    repeat_rate = repeat_customers / len(rfm) * 100
+    insights.append(f"Repeat Purchase Rate: {repeat_rate:.1f}%")
+    
+    # Time-based insights
+    peak_hour = orders_df['order_hour'].value_counts().idxmax()
+    peak_day = orders_df['order_day_of_week'].value_counts().idxmax()
+    insights.append(f"Peak Ordering Hour: {peak_hour}:00")
+    insights.append(f"Busiest Day: {peak_day}")
+    
+    return insights
+
+print("\n=== Key Business Insights ===")
+for insight in generate_insights():
+    print(f"• {insight}")
