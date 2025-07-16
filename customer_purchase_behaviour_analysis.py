@@ -230,3 +230,18 @@ def generate_insights():
 print("\n=== Key Business Insights ===")
 for insight in generate_insights():
     print(f"• {insight}")
+
+### Export Results and Next Steps ### 
+# Save processed data
+rfm.to_csv('customer_rfm_analysis.csv', index=True)
+cluster_summary.to_csv('cluster_summary.csv', index=True)
+
+# Save visualizations
+fig.savefig('analysis_dashboard.png', dpi=300, bbox_inches='tight')
+
+print("\n=== Recommended Actions ===")
+print("1. Target 'At Risk' customers with retention campaigns")
+print("2. Reward 'Champions' with exclusive offers")
+print("3. Focus inventory on top-performing product categories")
+print("4. Optimize staffing for peak hours and days")
+print("5. Develop personalized marketing based on customer clusters")
